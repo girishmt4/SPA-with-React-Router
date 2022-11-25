@@ -1,20 +1,26 @@
+import React, { Suspense } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import AllQuotes from './pages/AllQuotes';
-import NewQuote from './pages/NewQuote';
-import QuoteDetail from './pages/QuoteDetail';
 import Layout from './components/layout/Layout';
-import NotFound from './pages/NotFound';
+import LoadingSpinner from './components/UI/LoadingSpinner';
+
+const NewQuote = React.lazy(() => import('./pages/NewQuote'));
+const QuoteDetail = React.lazy(() => import('./pages/QuoteDetail'));
+const NotFound = React.lazy(() => import('./pages/NotFound'));
+
 
 function App() {
   return (
     <Layout>
-      <Routes>
-        <Route path="/" element={<Navigate replace to="/quotes"></Navigate>} />
-        <Route path="/quotes" element={<AllQuotes></AllQuotes>} />
-        <Route path="/quotes/:quoteId/*" element={<QuoteDetail></QuoteDetail>} />
-        <Route path="/new-quote" element={<NewQuote></NewQuote>} />
-        <Route path="*" element={<NotFound></NotFound>} />
-      </Routes>
+      <Suspense fallback={<div className='centered'><LoadingSpinner></LoadingSpinner></div>}>
+        <Routes>
+          <Route path="/" element={<Navigate replace to="/quotes"></Navigate>} />
+          <Route path="/quotes" element={<AllQuotes></AllQuotes>} />
+          <Route path="/quotes/:quoteId/*" element={<QuoteDetail></QuoteDetail>} />
+          <Route path="/new-quote" element={<NewQuote></NewQuote>} />
+          <Route path="*" element={<NotFound></NotFound>} />
+        </Routes>
+      </Suspense>
     </Layout>
   );
 }
